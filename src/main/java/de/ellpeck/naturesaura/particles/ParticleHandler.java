@@ -35,6 +35,7 @@ public final class ParticleHandler {
         @Override
         public void end(Tesselator tessellator) {
             tessellator.end();
+            RenderSystem.enableCull();
         }
 
         @Override
@@ -54,6 +55,7 @@ public final class ParticleHandler {
         @Override
         public void end(Tesselator tessellator) {
             tessellator.end();
+            RenderSystem.enableCull();
         }
 
         @Override
