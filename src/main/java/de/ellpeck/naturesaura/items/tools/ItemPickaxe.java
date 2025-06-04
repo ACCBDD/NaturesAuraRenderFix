@@ -1,7 +1,6 @@
 package de.ellpeck.naturesaura.items.tools;
 
 import de.ellpeck.naturesaura.Helper;
-import de.ellpeck.naturesaura.NaturesAura;
 import de.ellpeck.naturesaura.api.NaturesAuraAPI;
 import de.ellpeck.naturesaura.api.misc.ILevelData;
 import de.ellpeck.naturesaura.data.ItemModelGenerator;
@@ -11,7 +10,6 @@ import de.ellpeck.naturesaura.reg.ICustomItemModel;
 import de.ellpeck.naturesaura.reg.IModItem;
 import de.ellpeck.naturesaura.reg.ModRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -26,10 +24,7 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-
-import javax.annotation.Nullable;
+import net.neoforged.neoforge.common.Tags;
 
 public class ItemPickaxe extends PickaxeItem implements IModItem, ICustomItemModel {
 
@@ -103,12 +98,6 @@ public class ItemPickaxe extends PickaxeItem implements IModItem, ICustomItemMod
         if (stack.getItem() == ModItems.DEPTH_PICKAXE && Helper.toggleToolEnabled(player, stack))
             return InteractionResultHolder.success(stack);
         return super.use(level, player, hand);
-    }
-
-    @Nullable
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        return Helper.makeRechargeProvider(stack, true);
     }
 
     @Override

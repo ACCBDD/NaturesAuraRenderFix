@@ -18,13 +18,13 @@ import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BlastFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.SmokerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.fml.util.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
 
 public class BlockEntityFurnaceHeater extends BlockEntityImpl implements ITickableBlockEntity {
 
-    private static final Field FURNACE_DATA_FIELD = ObfuscationReflectionHelper.findField(AbstractFurnaceBlockEntity.class, "f_58311_");
+    private static final Field FURNACE_DATA_FIELD = ObfuscationReflectionHelper.findField(AbstractFurnaceBlockEntity.class, "dataAccess");
     public boolean isActive;
 
     public BlockEntityFurnaceHeater(BlockPos pos, BlockState state) {
@@ -105,7 +105,7 @@ public class BlockEntityFurnaceHeater extends BlockEntityImpl implements ITickab
             var recipe = this.level.getRecipeManager().getRecipeFor(BlockEntityFurnaceHeater.getRecipeType(furnace), furnace, this.level).orElse(null);
             if (recipe == null)
                 return false;
-            var output = recipe.getResultItem(this.level.registryAccess());
+            var output = recipe.value().getResultItem(this.level.registryAccess());
             var currOutput = furnace.getItem(2);
             return currOutput.isEmpty() || Helper.areItemsEqual(currOutput, output, true) && currOutput.getCount() + output.getCount() <= output.getMaxStackSize();
         } else

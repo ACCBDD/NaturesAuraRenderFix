@@ -16,9 +16,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.FakePlayerFactory;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.common.util.FakePlayerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class BlockEntityPlacer extends BlockEntityImpl implements ITickableBlock
             var tileUp = this.level.getBlockEntity(this.worldPosition.above());
             if (tileUp == null)
                 return;
-            var handler = tileUp.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.DOWN).orElse(null);
+            var handler = this.level.getCapability(Capabilities.ItemHandler.BLOCK, tileUp.getBlockPos(), tileUp.getBlockState(), tileUp, Direction.DOWN);
             if (handler == null)
                 return;
             var frames = Helper.getAttachedItemFrames(this.level, this.worldPosition);
@@ -115,7 +115,8 @@ public class BlockEntityPlacer extends BlockEntityImpl implements ITickableBlock
         var fake = FakePlayerFactory.getMinecraft((ServerLevel) this.level);
         fake.getInventory().items.set(fake.getInventory().selected, stack);
         var ray = new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP, pos, false);
-        ForgeHooks.onPlaceItemIntoWorld(new UseOnContext(fake, InteractionHand.MAIN_HAND, ray));
+        CommonHooks.onPlaceItemIntoWorld(new UseOnContext(fake, InteractionHand.MAIN_HAND, ray));
         return fake.getMainHandItem().copy();
     }
+
 }

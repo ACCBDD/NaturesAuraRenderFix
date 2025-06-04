@@ -28,12 +28,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AnvilUpdateEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.AnvilUpdateEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -43,7 +42,7 @@ public class BlockEnderCrate extends BlockContainerImpl implements ITESRProvider
     public BlockEnderCrate() {
         super("ender_crate", BlockEntityEnderCrate.class, Properties.of().strength(5F).lightLevel(s -> 7).sound(SoundType.STONE));
 
-        MinecraftForge.EVENT_BUS.register(this);
+        NeoForge.EVENT_BUS.register(this);
     }
 
     public static String getEnderName(ItemStack stack) {
@@ -92,7 +91,7 @@ public class BlockEnderCrate extends BlockContainerImpl implements ITESRProvider
             var tile = levelIn.getBlockEntity(pos);
             if (tile instanceof BlockEntityEnderCrate crate && crate.canOpen() && crate.canUseRightNow(2500)) {
                 crate.drainAura(2500);
-                NetworkHooks.openScreen((ServerPlayer) player, crate, pos);
+                player.openMenu(crate, pos);
             }
         }
         return InteractionResult.SUCCESS;
@@ -132,4 +131,5 @@ public class BlockEnderCrate extends BlockContainerImpl implements ITESRProvider
     public void registerTESR() {
         BlockEntityRenderers.register(ModBlockEntities.ENDER_CRATE, RenderEnderCrate::new);
     }
+
 }

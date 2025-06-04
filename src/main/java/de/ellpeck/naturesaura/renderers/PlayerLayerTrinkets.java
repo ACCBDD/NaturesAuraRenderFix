@@ -16,9 +16,8 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.HashSet;
@@ -61,8 +60,9 @@ public class PlayerLayerTrinkets extends RenderLayer<AbstractClientPlayer, Playe
         }
 
         if (Compat.hasCompat("curios")) {
-            IItemHandler handler = CuriosApi.getCuriosHelper().getEquippedCurios(player).orElse(null);
-            if (handler != null) {
+            var inventory = CuriosApi.getCuriosInventory(player).orElse(null);
+            if (inventory != null) {
+                var handler = inventory.getEquippedCurios();
                 for (var i = 0; i < handler.getSlots(); i++)
                     this.renderStack(handler.getStackInSlot(i), player, type, main, second, matrices, buffer, packedLight);
             }
@@ -84,4 +84,5 @@ public class PlayerLayerTrinkets extends RenderLayer<AbstractClientPlayer, Playe
             }
         }
     }
+
 }

@@ -24,13 +24,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.level.SaplingGrowTreeEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.level.SaplingGrowTreeEvent;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class BlockWoodStand extends BlockContainerImpl implements ITESRProvider<BlockEntityWoodStand>, ICustomBlockState {
@@ -39,7 +38,7 @@ public class BlockWoodStand extends BlockContainerImpl implements ITESRProvider<
 
     public BlockWoodStand() {
         super("wood_stand", BlockEntityWoodStand.class, Properties.of().strength(1.5F).sound(SoundType.WOOD));
-        MinecraftForge.EVENT_BUS.register(this);
+        NeoForge.EVENT_BUS.register(this);
     }
 
     @Override
@@ -62,8 +61,8 @@ public class BlockWoodStand extends BlockContainerImpl implements ITESRProvider<
                 var saplingStack = new ItemStack(level.getBlockState(pos).getBlock());
                 if (!saplingStack.isEmpty()) {
                     for (var recipe : ((Level) level).getRecipeManager().getRecipesFor(ModRecipes.TREE_RITUAL_TYPE, null, (Level) level)) {
-                        if (recipe.saplingType.test(saplingStack)) {
-                            List<Ingredient> required = new ArrayList<>(Arrays.asList(recipe.ingredients));
+                        if (recipe.value().saplingType.test(saplingStack)) {
+                            List<Ingredient> required = new ArrayList<>(recipe.value().ingredients);
                             var toPick = new MutableObject<BlockEntityWoodStand>();
 
                             var fine = Multiblocks.TREE_RITUAL.forEach(pos, 'W', (tilePos, matcher) -> {

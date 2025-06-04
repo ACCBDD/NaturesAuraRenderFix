@@ -1,5 +1,6 @@
 package de.ellpeck.naturesaura.blocks;
 
+import com.mojang.serialization.MapCodec;
 import de.ellpeck.naturesaura.blocks.tiles.BlockEntityImpl;
 import de.ellpeck.naturesaura.blocks.tiles.ITickableBlockEntity;
 import de.ellpeck.naturesaura.reg.IModItem;
@@ -107,6 +108,11 @@ public class BlockContainerImpl extends BaseEntityBlock implements IModItem {
     }
 
     @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return null;
+    }
+
+    @Override
     public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
@@ -129,11 +135,11 @@ public class BlockContainerImpl extends BaseEntityBlock implements IModItem {
     }
 
     @Override
-    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         var tile = level.getBlockEntity(pos);
         if (tile instanceof BlockEntityImpl impl)
             impl.dropInventory();
-        super.playerWillDestroy(level, pos, state, player);
+        return super.playerWillDestroy(level, pos, state, player);
     }
 
     @Override
@@ -181,4 +187,5 @@ public class BlockContainerImpl extends BaseEntityBlock implements IModItem {
             throw new IllegalStateException("Cannot construct block entity from class " + this.tileClass, e);
         }
     }
+
 }

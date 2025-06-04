@@ -13,15 +13,15 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class BlockAnimalContainer extends BlockContainerImpl implements IVisualizable, ICustomBlockState {
 
     private static final VoxelShape SHAPE = Block.box(5, 0, 5, 11, 13, 11);
 
     public BlockAnimalContainer() {
-        super("animal_container", BlockEntityAnimalContainer.class, Properties.copy(Blocks.STONE));
+        super("animal_container", BlockEntityAnimalContainer.class, Properties.ofFullCopy(Blocks.STONE));
     }
 
     @Override
@@ -57,4 +57,5 @@ public class BlockAnimalContainer extends BlockContainerImpl implements IVisuali
     public void generateCustomBlockState(BlockStateGenerator generator) {
         generator.simpleBlock(this, generator.models().getExistingFile(generator.modLoc(this.getBaseName())));
     }
+
 }

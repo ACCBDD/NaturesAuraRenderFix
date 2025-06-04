@@ -1,33 +1,29 @@
 package de.ellpeck.naturesaura.recipes;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import de.ellpeck.naturesaura.ModConfig;
 import de.ellpeck.naturesaura.NaturesAura;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.crafting.conditions.ICondition;
-import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.conditions.ICondition;
 
 public class EnabledCondition implements ICondition {
 
-    private static final ResourceLocation NAME = new ResourceLocation(NaturesAura.MOD_ID, "enabled");
-    private ForgeConfigSpec.ConfigValue<Boolean> config;
+    private static final Codec<EnabledCondition> CODEC = RecordCodecBuilder.create(i ->
+            i.group(Codec.STRING.fieldOf("name").forGetter(c -> c.name)).apply(i, EnabledCondition::new)
+    );
+
+    private ModConfigSpec.ConfigValue<Boolean> config;
     private final String name;
 
     @SuppressWarnings("unchecked")
     public EnabledCondition(String name) {
         this.name = name;
         try {
-            this.config = (ForgeConfigSpec.ConfigValue<Boolean>) ModConfig.class.getField(name).get(ModConfig.instance);
+            this.config = (ModConfigSpec.ConfigValue<Boolean>) ModConfig.class.getField(name).get(ModConfig.instance);
         } catch (IllegalAccessException | NoSuchFieldException e) {
             NaturesAura.LOGGER.error(e);
         }
-    }
-
-    @Override
-    public ResourceLocation getID() {
-        return EnabledCondition.NAME;
     }
 
     @Override
@@ -35,21 +31,9 @@ public class EnabledCondition implements ICondition {
         return this.config != null && this.config.get();
     }
 
-    public static class Serializer implements IConditionSerializer<EnabledCondition> {
-
-        @Override
-        public void write(JsonObject json, EnabledCondition value) {
-            json.addProperty("config", value.name);
-        }
-
-        @Override
-        public EnabledCondition read(JsonObject json) {
-            return new EnabledCondition(GsonHelper.getAsString(json, "config"));
-        }
-
-        @Override
-        public ResourceLocation getID() {
-            return EnabledCondition.NAME;
-        }
+    @Override
+    public Codec<? extends ICondition> codec() {
+        return EnabledCondition.CODEC;
     }
+
 }

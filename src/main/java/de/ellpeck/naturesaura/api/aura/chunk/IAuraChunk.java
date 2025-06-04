@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.function.BiConsumer;
@@ -33,7 +33,7 @@ public interface IAuraChunk extends INBTSerializable<CompoundTag> {
      */
     static IAuraChunk getAuraChunk(Level level, BlockPos pos) {
         var chunk = (LevelChunk) level.getChunk(pos);
-        return chunk.getCapability(NaturesAuraAPI.CAP_AURA_CHUNK, null).orElse(null);
+        return chunk.getData(NaturesAuraAPI.AURA_CHUNK_ATTACHMENT);
     }
 
     /**
@@ -159,4 +159,5 @@ public interface IAuraChunk extends INBTSerializable<CompoundTag> {
     IAuraType getType();
 
     void markDirty();
+
 }

@@ -5,10 +5,10 @@ import de.ellpeck.naturesaura.api.aura.type.BasicAuraType;
 import de.ellpeck.naturesaura.api.misc.WeightedOre;
 import de.ellpeck.naturesaura.chunk.effect.OreSpawnEffect;
 import de.ellpeck.naturesaura.chunk.effect.PlantBoostEffect;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
 
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +51,7 @@ public final class ModConfig {
     public ConfigValue<Boolean> debugLevel;
     public ConfigValue<Boolean> renderItemsOnPlayer;
 
-    public ModConfig(ForgeConfigSpec.Builder builder) {
+    public ModConfig(ModConfigSpec.Builder builder) {
         builder.push("general");
         this.additionalBotanistPickaxeConversions = builder
                 .comment("Additional conversion recipes for the Botanist's Pickaxe right click function. Each entry needs to be formatted as modid:input_block[prop1=value1,...]->modid:output_block[prop1=value1,...] where block state properties are optional, and entries follow standard TOML array formatting (https://toml.io/en/v1.0.0#array).")
@@ -239,18 +239,18 @@ public final class ModConfig {
         }
 
         try {
-            for (String s : this.plantBoostExceptions.get())
-                PlantBoostEffect.EXCEPTIONS.add(Objects.requireNonNull(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(s))));
+            for (var s : this.plantBoostExceptions.get())
+                PlantBoostEffect.EXCEPTIONS.add(Objects.requireNonNull(BuiltInRegistries.BLOCK.get(new ResourceLocation(s))));
         } catch (Exception e) {
             NaturesAura.LOGGER.warn("Error parsing plantBoostExceptions", e);
 
         }
 
         try {
-            for (String s : this.additionalProjectiles.get()) {
+            for (var s : this.additionalProjectiles.get()) {
                 var split = s.split("->");
                 var name = new ResourceLocation(split[0]);
-                var type = Objects.requireNonNull(ForgeRegistries.ENTITY_TYPES.getValue(name));
+                var type = Objects.requireNonNull(BuiltInRegistries.ENTITY_TYPE.get(name));
                 var amount = Integer.parseInt(split[1]);
                 NaturesAuraAPI.PROJECTILE_GENERATIONS.put(type, amount);
             }
@@ -258,4 +258,5 @@ public final class ModConfig {
             NaturesAura.LOGGER.warn("Error parsing additionalProjectiles", e);
         }
     }
+
 }

@@ -5,8 +5,8 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiEnderCrate extends AbstractContainerScreen<ContainerEnderCrate> {
@@ -20,7 +20,6 @@ public class GuiEnderCrate extends AbstractContainerScreen<ContainerEnderCrate> 
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(graphics, mouseX, mouseY);
     }
@@ -38,4 +37,5 @@ public class GuiEnderCrate extends AbstractContainerScreen<ContainerEnderCrate> 
         graphics.blit(GuiEnderCrate.CHEST_GUI_TEXTURE, i, j, 0, 0, this.imageWidth, 3 * 18 + 17);
         graphics.blit(GuiEnderCrate.CHEST_GUI_TEXTURE, i, j + 3 * 18 + 17, 0, 126, this.imageWidth, 96);
     }
+
 }

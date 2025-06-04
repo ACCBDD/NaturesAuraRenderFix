@@ -14,6 +14,7 @@ import de.ellpeck.naturesaura.api.misc.WeightedOre;
 import de.ellpeck.naturesaura.api.multiblock.IMultiblock;
 import de.ellpeck.naturesaura.api.multiblock.Matcher;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.EntityType;
@@ -21,11 +22,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.ItemCapability;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
@@ -83,25 +85,21 @@ public final class NaturesAuraAPI {
      */
     public static final Map<ItemStack, WeatherType> WEATHER_CHANGER_CONVERSIONS = new HashMap<>();
     /**
-     * The capability for any item or block that stores Aura in the form of an {@link IAuraContainer}
+     * The capability for any item that stores Aura in the form of an {@link IAuraContainer}
      */
-    public static final Capability<IAuraContainer> CAP_AURA_CONTAINER = CapabilityManager.get(new CapabilityToken<>() {
-    });
+    public static final ItemCapability<IAuraContainer, Void> AURA_CONTAINER_ITEM_CAPABILITY = ItemCapability.createVoid(new ResourceLocation(NaturesAuraAPI.MOD_ID, "aura_container_item"), IAuraContainer.class);
+    /**
+     * The capability for any block that stores Aura in the form of an {@link IAuraContainer}
+     */
+    public static final BlockCapability<IAuraContainer, Direction> AURA_CONTAINER_BLOCK_CAPABILITY = BlockCapability.create(new ResourceLocation(NaturesAuraAPI.MOD_ID, "aura_container_block"), IAuraContainer.class, Direction.class);
     /**
      * The capability for any item that can be recharged from an Aura storage container like the Aura Cache in the form of {@link IAuraRecharge} by a player holding it in their hand
      */
-    public static final Capability<IAuraRecharge> CAP_AURA_RECHARGE = CapabilityManager.get(new CapabilityToken<>() {
-    });
+    public static final ItemCapability<IAuraRecharge, Void> AURA_RECHARGE_CAPABILITY = ItemCapability.createVoid(new ResourceLocation(NaturesAuraAPI.MOD_ID, "aura_recharge"), IAuraRecharge.class);
     /**
      * The capability that any chunk in a level has to store Aura in it. As this is only applicable to chunks and all chunks in the level automatically get assigned this capability, using it directly is not necessary for addon developers. To retrieve this capability from any chunk, use the helper method {@link IAuraChunk#getAuraChunk(net.minecraft.world.level.Level, BlockPos)}.
      */
-    public static final Capability<IAuraChunk> CAP_AURA_CHUNK = CapabilityManager.get(new CapabilityToken<>() {
-    });
-    /**
-     * The capability that any level has to store Nature's Aura specific data in it. To retrieve this capability from any level, use the helper methods {@link ILevelData#getLevelData(net.minecraft.world.level.Level)} or {@link ILevelData#getOverworldData(net.minecraft.world.level.Level)}.
-     */
-    public static final Capability<ILevelData> CAP_LEVEL_DATA = CapabilityManager.get(new CapabilityToken<>() {
-    });
+    public static final AttachmentType<IAuraChunk> AURA_CHUNK_ATTACHMENT = AttachmentType.serializable(h -> NaturesAuraAPI.instance().createAuraChunk((LevelChunk) h)).build();
     private static final IInternalHooks INSTANCE;
 
     static {
@@ -259,6 +257,11 @@ public final class NaturesAuraAPI {
          * @see IAuraChunk#getHighestSpot(Level, BlockPos, int, BlockPos)
          */
         BlockPos getHighestAuraDrainSpot(Level level, BlockPos pos, int radius, BlockPos defaultSpot);
+
+        ILevelData getLevelData(Level level);
+
+        IAuraChunk createAuraChunk(LevelChunk chunk);
+
     }
 
 }

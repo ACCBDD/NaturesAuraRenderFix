@@ -45,11 +45,11 @@ public class TreeRitualCategory implements IRecipeCategory<TreeRitualRecipe> {
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, TreeRitualRecipe recipe, IFocusGroup focuses) {
         builder.addSlot(RecipeIngredientRole.CATALYST, 35, 35).addItemStacks(Arrays.asList(recipe.saplingType.getItems()));
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 125, 35).addItemStack(recipe.result);
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 125, 35).addItemStack(recipe.output);
 
         var positions = new int[][]{{35, 1}, {35, 69}, {1, 35}, {69, 35}, {12, 12}, {58, 58}, {58, 12}, {12, 58}};
-        for (var i = 0; i < recipe.ingredients.length; i++)
-            builder.addSlot(RecipeIngredientRole.INPUT, positions[i][0], positions[i][1]).addItemStacks(Arrays.asList(recipe.ingredients[i].getItems()));
+        for (var i = 0; i < recipe.ingredients.size(); i++)
+            builder.addSlot(RecipeIngredientRole.INPUT, positions[i][0], positions[i][1]).addItemStacks(Arrays.asList(recipe.ingredients.get(i).getItems()));
     }
 
 }

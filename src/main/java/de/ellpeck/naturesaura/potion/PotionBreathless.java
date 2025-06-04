@@ -2,9 +2,9 @@ package de.ellpeck.naturesaura.potion;
 
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingHealEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 
 import java.util.Random;
 
@@ -14,7 +14,7 @@ public class PotionBreathless extends PotionImpl {
 
     public PotionBreathless() {
         super("breathless", MobEffectCategory.HARMFUL, 0);
-        MinecraftForge.EVENT_BUS.register(this);
+        NeoForge.EVENT_BUS.register(this);
     }
 
     @SubscribeEvent
@@ -29,7 +29,7 @@ public class PotionBreathless extends PotionImpl {
     }
 
     @Override
-    public boolean isDurationEffectTick(int duration, int amplifier) {
+    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
         var mod = 200 >> amplifier;
         return mod > 0 && duration % mod == 0 && this.random.nextBoolean();
     }
@@ -38,4 +38,5 @@ public class PotionBreathless extends PotionImpl {
     public void applyEffectTick(LivingEntity entity, int amplifier) {
         entity.hurt(entity.damageSources().magic(), 1F);
     }
+
 }

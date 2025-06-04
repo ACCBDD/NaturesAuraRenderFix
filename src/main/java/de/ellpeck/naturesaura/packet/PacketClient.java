@@ -1,5 +1,6 @@
 package de.ellpeck.naturesaura.packet;
 
+import de.ellpeck.naturesaura.NaturesAura;
 import de.ellpeck.naturesaura.items.ItemRangeVisualizer;
 import de.ellpeck.naturesaura.items.ModItems;
 import net.minecraft.client.Minecraft;
@@ -7,43 +8,43 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
-import java.util.function.Supplier;
+public class PacketClient implements CustomPacketPayload {
 
-public class PacketClient {
+    public static final ResourceLocation ID = new ResourceLocation(NaturesAura.MOD_ID, "client");
 
-    private int type;
-    private CompoundTag data;
+    private final int type;
+    private final CompoundTag data;
 
     public PacketClient(int type, CompoundTag data) {
         this.type = type;
         this.data = data;
     }
 
-    private PacketClient() {
-
+    public PacketClient(FriendlyByteBuf buf) {
+        this.type = buf.readByte();
+        this.data = buf.readNbt();
     }
 
-    public static PacketClient fromBytes(FriendlyByteBuf buf) {
-        var client = new PacketClient();
-        client.type = buf.readByte();
-        client.data = buf.readNbt();
-        return client;
+    @Override
+    public void write(FriendlyByteBuf buf) {
+        buf.writeByte(this.type);
+        buf.writeNbt(this.data);
     }
 
-    public static void toBytes(PacketClient packet, FriendlyByteBuf buf) {
-        buf.writeByte(packet.type);
-        buf.writeNbt(packet.data);
+    @Override
+    public ResourceLocation id() {
+        return PacketClient.ID;
     }
 
-    // lambda causes classloading issues on a server here
     @SuppressWarnings("Convert2Lambda")
-    public static void onMessage(PacketClient message, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(new Runnable() {
+    public static void onMessage(PacketClient message, PlayPayloadContext ctx) {
+        ctx.workHandler().execute(new Runnable() {
             @Override
             public void run() {
                 var mc = Minecraft.getInstance();
@@ -64,6 +65,6 @@ public class PacketClient {
                 }
             }
         });
-        ctx.get().setPacketHandled(true);
     }
+
 }

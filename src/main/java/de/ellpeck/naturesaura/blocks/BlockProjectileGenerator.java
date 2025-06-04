@@ -25,17 +25,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.ProjectileImpactEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.util.ObfuscationReflectionHelper;
 
 public class BlockProjectileGenerator extends BlockContainerImpl implements ITESRProvider<BlockEntityProjectileGenerator>, ICustomBlockState {
 
     public BlockProjectileGenerator() {
         super("projectile_generator", BlockEntityProjectileGenerator.class, Properties.of().strength(2.5F).sound(SoundType.STONE));
 
-        MinecraftForge.EVENT_BUS.register(this);
+        NeoForge.EVENT_BUS.register(this);
         DispenserBlock.registerBehavior(Items.ENDER_PEARL, new AbstractProjectileDispenseBehavior() {
 
             @Override
@@ -50,7 +50,7 @@ public class BlockProjectileGenerator extends BlockContainerImpl implements ITES
             protected Projectile getProjectile(Level levelIn, Position position, ItemStack stackIn) {
                 var ret = new ThrownTrident(EntityType.TRIDENT, levelIn);
                 ret.setPos(position.x(), position.y(), position.z());
-                ObfuscationReflectionHelper.setPrivateValue(ThrownTrident.class, ret, stackIn.copy(), "f_37555_");
+                ObfuscationReflectionHelper.setPrivateValue(ThrownTrident.class, ret, stackIn.copy(), "pickupItemStack");
                 ret.pickup = AbstractArrow.Pickup.ALLOWED;
                 return ret;
             }

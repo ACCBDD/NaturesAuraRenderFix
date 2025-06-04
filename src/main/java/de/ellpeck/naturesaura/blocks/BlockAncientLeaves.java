@@ -17,8 +17,8 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 public class BlockAncientLeaves extends LeavesBlock implements IModItem, IColorProvidingBlock, IColorProvidingItem, ICustomBlockState, EntityBlock {
@@ -53,7 +53,8 @@ public class BlockAncientLeaves extends LeavesBlock implements IModItem, IColorP
         if (rand.nextFloat() >= 0.95F && !levelIn.getBlockState(pos.below()).isCollisionShapeFullBlock(levelIn, pos)) {
             var tile = levelIn.getBlockEntity(pos);
             if (tile instanceof BlockEntityAncientLeaves) {
-                if (((BlockEntityAncientLeaves) tile).getAuraContainer().getStoredAura() > 0) {
+                var container = levelIn.getCapability(NaturesAuraAPI.AURA_CONTAINER_BLOCK_CAPABILITY, tile.getBlockPos(), tile.getBlockState(), tile, null);
+                if (container.getStoredAura() > 0) {
                     NaturesAuraAPI.instance().spawnMagicParticle(
                             pos.getX() + rand.nextDouble(), pos.getY(), pos.getZ() + rand.nextDouble(),
                             0F, 0F, 0F, 0xCC4780,
@@ -72,7 +73,8 @@ public class BlockAncientLeaves extends LeavesBlock implements IModItem, IColorP
         if (!levelIn.isClientSide) {
             var tile = levelIn.getBlockEntity(pos);
             if (tile instanceof BlockEntityAncientLeaves) {
-                if (((BlockEntityAncientLeaves) tile).getAuraContainer().getStoredAura() <= 0) {
+                var container = levelIn.getCapability(NaturesAuraAPI.AURA_CONTAINER_BLOCK_CAPABILITY, tile.getBlockPos(), tile.getBlockState(), tile, null);
+                if (container.getStoredAura() <= 0) {
                     levelIn.setBlockAndUpdate(pos, ModBlocks.DECAYED_LEAVES.defaultBlockState());
                 }
             }
@@ -94,4 +96,5 @@ public class BlockAncientLeaves extends LeavesBlock implements IModItem, IColorP
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new BlockEntityAncientLeaves(pos, state);
     }
+
 }
